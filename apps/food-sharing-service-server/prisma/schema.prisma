@@ -1,0 +1,52 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Building {
+  address   String?
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  name      String?
+  updatedAt DateTime @updatedAt
+}
+
+model FoodItem {
+  createdAt   DateTime  @default(now())
+  description String?
+  expiryDate  DateTime?
+  id          String    @id @default(cuid())
+  name        String?
+  requests    Request[]
+  updatedAt   DateTime  @updatedAt
+  user        User?     @relation(fields: [userId], references: [id])
+  userId      String?
+}
+
+model Request {
+  createdAt   DateTime  @default(now())
+  foodItem    FoodItem? @relation(fields: [foodItemId], references: [id])
+  foodItemId  String?
+  id          String    @id @default(cuid())
+  requestDate DateTime?
+  requester   String?
+  status      String?
+  updatedAt   DateTime  @updatedAt
+}
+
+model User {
+  createdAt DateTime   @default(now())
+  email     String?    @unique
+  firstName String?
+  foodItems FoodItem[]
+  id        String     @id @default(cuid())
+  lastName  String?
+  password  String
+  roles     Json
+  updatedAt DateTime   @updatedAt
+  username  String     @unique
+}
